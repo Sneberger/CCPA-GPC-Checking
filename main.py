@@ -4,7 +4,7 @@ from tranco import Tranco
 import utility_functions
 import utility_us_privacy_string
 import utility_optanon
-
+import browser_cookie3
 
 def url_column(num_urls = 60000):
     t = Tranco(cache=True, cache_dir='.tranco')
@@ -65,15 +65,33 @@ def gpc_json_column():
             print(counter, line[0], result)
             counter += 1
 
+def cookie_counter():
+    cookies = browser_cookie3.chrome()
+    print('Aggregate number of cookies =', len(cookies))
+
+def with_gpc_off():
+    url_column(30)                             # outputs 'resultsA.csv'
+    ccpa_column()                              # outputs 'resultsAB.csv'
+    gpc_json_column()                          # outputs 'resultsABC.csv'
+    utility_us_privacy_string.resultsDEFG()    # outputs 'resultsABCDEFG.csv'
+    utility_optanon.optanon_with_gpc_off()     # outputs 'resultsABCDEFGH.csv'
+    cookie_counter()                           # outputs total to console
+        
+def with_gpc_on():
+    utility_optanon.optanon_with_gpc_on()      # outputs 'resultsABCDEFGHI.csv'
+    cookie_counter()                           # outputs total to console
+
 def main():
-    url_column(30)
-    ccpa_column()
-    gpc_json_column()
-    utility_us_privacy_string.resultsDEFG()
-    # On local Chrome turn GPC off and clear browsing cookies
-    utility_optanon.optanon_with_gpc_off()
-    # On local Chrome turn GPC on and clear browsing cookies
-    # utility_optanon.optanon_with_gpc_on()
+    # This program requires that the user have a browser extension that enables
+    # turning the GPC signal on and off in the user's local Chrome browswer (such as
+    # 'GPC enable'). The progrem needs to be run twice as there is no way to automate
+    # toggling the GPC setting in the local Chrome browser. Run with_gpc_off first
+    # then comment with_gpc_off out and uncomment with_gpc_on and rerun
+    
+    # MANUAL WORK REQUIRED: set GPC signal in local Chrome Browser to off
+    with_gpc_off()
+    # MANUAL WORK REQUIRED: set GPC signal in local Chrome Browser to on
+    #with_gpc_on()
 
 if __name__ == "__main__":
     main()
