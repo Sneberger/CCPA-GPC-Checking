@@ -77,46 +77,6 @@ def uspapi(url, gpc_on):
         driver.quit()
         return (True, 0, 0)
 
-def analyze_uspapi_data(csv_name):
-    opt_out = []
-    no_opt_out = []
-    opt_out_ns = no_opt_out_ns = 0
-
-    f = open(csv_name, "r")
-    next(f)
-    for line in f:
-        line_data = line.split(",")
-        if "d" in line_data[2]:
-            print(line_data[2])
-        ans = ""
-
-        if line_data[2] == "0":
-            ans += "0"
-        elif len(line_data[2]) == 4:
-            ans += line_data[2][2]
-        else:
-            ans += "9"
-        
-        if line_data[4] == "0":
-            ans += "0"
-        elif len(line_data[4]) == 4:
-            ans += line_data[4][2]
-        else:
-            ans += "9"
-
-        if ans != "00":
-            opt_out.append(ans) if line_data[1] == "True" else no_opt_out.append(ans)
-        
-        if line_data[1] == "True":
-            opt_out_ns += 1
-        else:
-            no_opt_out_ns += 1
-    f.close()
-
-    print(len(opt_out), len(no_opt_out))
-    print(sorted(opt_out), sorted(no_opt_out))
-    print(opt_out_ns, no_opt_out_ns)
-
 def resultsDEFG():
     # before = datetime.datetime.now().replace(microsecond=0)
     # run_usp_api("usp_api_" + str(datetime.datetime.now().month) + "_" + str(datetime.datetime.now().day) + ".csv", "./resources/top-1m-091522.csv", 100)
