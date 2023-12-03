@@ -1,12 +1,5 @@
-#from requests.utils import dict_from_cookiejar
 import browser_cookie3
-import csv
-#import bsexplore  # import file that contains function called below
-#import requests
-import webbrowser
 import time
-#import os
-import AppOpener
 import utility_functions
 
 
