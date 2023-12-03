@@ -2,16 +2,11 @@
 
 import multiprocessing
 from selenium import webdriver
-#from selenium.webdriver.firefox.options import FirefoxOptions
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.common.by import By
-from bs4 import BeautifulSoup
 import csv
-import re
 import datetime
-# from resources.utils import convert_list
-# from resources.constants import opt_out_links
 from time import sleep
 import utility_functions
 
