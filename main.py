@@ -1,12 +1,12 @@
 import csv
-import bsexplore
 from tranco import Tranco
 import utility_functions
 import utility_us_privacy_string
 import utility_optanon
 import browser_cookie3
+import utility_count_packets
 
-def url_column(num_urls = 60000):
+def url_column(num_urls = 60000):   # number can be reduced for testing
     t = Tranco(cache=True, cache_dir='.tranco')
     base_list = t.list().top(num_urls)
     header = ['URL']
@@ -38,7 +38,7 @@ def ccpa_column():
         counter = 1
 
         for line in test_list_from_csv:
-            result = bsexplore.explore(line[0], None, 0)  # replace function as desired
+            result = utility_functions.explore(line[0], None, 0)  # replace function as desired
             if result == 'True':    # filtering down results for future processing
                 writer.writerow([line[0], result])
             print(counter, line[0], result)      # to show progress in terminal
@@ -69,29 +69,31 @@ def cookie_counter():
     cookies = browser_cookie3.chrome()
     print('Aggregate number of cookies =', len(cookies))
 
-def with_gpc_off():
+def columnsABCDEFGH():
     url_column(30)                             # outputs 'resultsA.csv'
     ccpa_column()                              # outputs 'resultsAB.csv'
     gpc_json_column()                          # outputs 'resultsABC.csv'
     utility_us_privacy_string.resultsDEFG()    # outputs 'resultsABCDEFG.csv'
     utility_optanon.optanon_with_gpc_off()     # outputs 'resultsABCDEFGH.csv'
-    cookie_counter()                           # outputs total to console
+    cookie_counter()                           # OPTIONAL: outputs total to console
         
-def with_gpc_on():
+def columnsIJKL():
     utility_optanon.optanon_with_gpc_on()      # outputs 'resultsABCDEFGHI.csv'
-    cookie_counter()                           # outputs total to console
+    utility_count_packets.resultsJKL()         # outputs 'resultABCDEFGHIJKL.csv"
+    cookie_counter()                           # OPTIONAL: outputs total to console
 
 def main():
     # This program requires that the user have a browser extension that enables
     # turning the GPC signal on and off in the user's local Chrome browswer (such as
-    # 'GPC enable'). The progrem needs to be run twice as there is no way to automate
-    # toggling the GPC setting in the local Chrome browser. Run with_gpc_off first
-    # then comment with_gpc_off out and uncomment with_gpc_on and rerun
+    # 'GPC enable'). The program needs to be run twice as there is no way to automate
+    # toggling the GPC setting in the local Chrome browser for some functions. Run
+    # columnsABCDEFGH() first with GPC signal off then run columnIJKL() with GPC signal on.
     
     # MANUAL WORK REQUIRED: set GPC signal in local Chrome Browser to off
-    with_gpc_off()
+    columnsABCDEFGH()
     # MANUAL WORK REQUIRED: set GPC signal in local Chrome Browser to on
-    #with_gpc_on()
+    #columnsIJKL()
+    # In order to continue alphabetic column output this function runs last
 
 if __name__ == "__main__":
     main()

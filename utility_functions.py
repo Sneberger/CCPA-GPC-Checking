@@ -6,6 +6,7 @@ import time
 import requests
 from urllib.parse import urlparse
 import os
+from bs4 import BeautifulSoup
 
 def get_extension(url):
         parsed_url = urlparse(url)
@@ -83,3 +84,53 @@ def check_gpc_json(url):
             return "NOT_FOUND"
     except Exception:
         return "json_err"
+    
+urls = []
+strings = ['Do Not Sell', 'Do-Not-Sell', 'Do Not Share', 'California Privacy']
+    
+def explore(url, parent_url, depth):
+ 
+    try:
+
+        # base cases
+        if url in urls:
+            return 'False'
+
+        if not '.' in url:   # this is what handles reletive paths
+            url = parent_url + url  # libraries may be needed to deal with syntax
+        elif not url.startswith('https://') and not url.startswith('http://'):
+            url = 'https://' + url  #if list does not have
+        
+        if depth > 2:
+            return 'False'
+        
+        # current work
+        try:
+            page = requests.get(url, timeout=3)    # removed(proxies=proxy) - Minimize timer timer
+        except:
+            urls.append(url)
+            return 'Req_Error'
+        
+        soup = BeautifulSoup(page.content, "html.parser")
+        for s in strings:
+            found = soup.find(string=re.compile(s))
+            if found:
+                urls.append(url)
+                return 'True'
+
+        # iteration
+        links = soup.find_all('a')
+        for hit in links:
+            #print(hit)
+            next_url = hit.get('href')
+            result = explore(next_url, url, depth + 1)
+            if result:
+                return result
+
+        urls.append(url)
+        return 'False'
+    except Exception as error:
+        if url != None:
+            urls.append(url)
+        print(url, error)
+        return 'Gen_Error'
